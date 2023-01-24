@@ -1,5 +1,5 @@
 ### Q1
-````bash
+```bash
 docker build --help
 ```
 
