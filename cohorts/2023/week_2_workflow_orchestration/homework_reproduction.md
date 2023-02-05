@@ -16,5 +16,17 @@ python etl_gcs_to_bq.py
 ### Q4
 ```bash
 python create_gh_deployment_block.py
-prefect deployment build etl_web_to_gcs_from_gh.py:main_flow --name etl-web-to-gcs-via-github --tag main -sb github/main
+prefect deployment build etl_web_to_gcs_from_gh.py:main_flow --name etl-web-to-gcs-via-github --tag main -sb github/main -a
+```
+
+### Q5
+```bash
+prefect cloud login
+python create_gh_deployment_block.py
+prefect deployment build etl_web_to_gcs_from_gh.py:main_flow --name etl-web-to-gcs-via-github --tag main -sb github/main -a
+```
+
+### Q6
+```
+# no commands
 ```
