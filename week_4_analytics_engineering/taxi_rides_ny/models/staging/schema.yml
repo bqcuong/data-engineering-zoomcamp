@@ -4,12 +4,12 @@ version: 2
 sources:
     - name: staging
       #For bigquery:
-      #database: taxi-rides-ny-339813
+      database: zoomcamp-2023-375721
 
       # For postgres:
-      database: production
+      #database: production
 
-      schema: trips_data_all
+      schema: tripdata
 
       # loaded_at_field: record_loaded_at
       tables:
