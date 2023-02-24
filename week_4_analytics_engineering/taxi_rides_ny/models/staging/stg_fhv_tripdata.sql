@@ -2,9 +2,7 @@
 
 with tripdata as 
 (
-  select *,
-    row_number() over(partition by pickup_datetime) as rn
-  from {{ source('staging','fhv_tripdata') }}
+  select *  from {{ source('staging','fhv_tripdata') }}
 )
 select
     -- identifiers
@@ -21,4 +19,3 @@ select
     Affiliated_base_number as affiliated_base_num
     
 from tripdata
-where rn = 1
