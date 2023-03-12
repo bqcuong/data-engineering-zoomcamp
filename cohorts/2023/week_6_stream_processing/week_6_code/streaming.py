@@ -4,8 +4,9 @@ import pyspark.sql.functions as F
 from settings import RIDE_SCHEMA, GREEN_PRODUCE_TOPIC_RIDES, GREEN_CONSUME_TOPIC_RIDES, TOPIC_WINDOWED_VENDOR_ID_COUNT, read_ccloud_config
 
 kafka_conf = read_ccloud_config("client.properties")
-import os
-os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1,org.apache.spark:spark-avro_2.12:3.3.1 pyspark-shell'
+
+#import os
+#os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1,org.apache.spark:spark-avro_2.12:3.3.1 pyspark-shell'
 
 def read_from_kafka(consume_topic: str):
     # Spark Streaming DataFrame, connect to Kafka topic served at host in bootrap.servers option
@@ -29,7 +30,7 @@ def parse_ride_from_kafka_message(df, schema):
     df = df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
 
     # split attributes to nested array in one Column
-    col = F.split(df['value'], ', ')
+    col = F.split(df['value'], ',')
 
     # expand col to multiple top-level columns
     for idx, field in enumerate(schema):
@@ -114,15 +115,15 @@ if __name__ == "__main__":
 
     sink_console(df_rides, output_mode='append')
 
-    #df_trip_count_by_vendor_id = op_groupby(df_rides, ['vendor_id'])
-    #df_trip_count_by_pickup_date_vendor_id = op_windowed_groupby(df_rides, window_duration="10 minutes",
-    #                                                             slide_duration='5 minutes')
+    df_trip_count_by_vendor_id = op_groupby(df_rides, ['vendor_id'])
+    df_trip_count_by_pickup_date_vendor_id = op_windowed_groupby(df_rides, window_duration="10 minutes",
+                                                                 slide_duration='5 minutes')
 
     # write the output out to the console for debugging / testing
-    #sink_console(df_trip_count_by_vendor_id)
+    sink_console(df_trip_count_by_vendor_id)
     # write the output to the kafka topic
-    #df_trip_count_messages = prepare_df_to_kafka_sink(df=df_trip_count_by_pickup_date_vendor_id,
-    #                                                  value_columns=['count'], key_column='vendor_id')
-    #kafka_sink_query = sink_kafka(df=df_trip_count_messages, topic=TOPIC_WINDOWED_VENDOR_ID_COUNT)
+    df_trip_count_messages = prepare_df_to_kafka_sink(df=df_trip_count_by_pickup_date_vendor_id,
+                                                      value_columns=['count'], key_column='vendor_id')
+    kafka_sink_query = sink_kafka(df=df_trip_count_messages, topic=TOPIC_WINDOWED_VENDOR_ID_COUNT)
 
     spark.streams.awaitAnyTermination()

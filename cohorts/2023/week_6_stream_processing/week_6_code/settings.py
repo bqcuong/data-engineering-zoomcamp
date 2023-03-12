@@ -10,10 +10,10 @@ GREEN_PRODUCE_TOPIC_RIDES = GREEN_CONSUME_TOPIC_RIDES = 'green_rides'
 
 RIDE_SCHEMA = T.StructType(
     [T.StructField("vendor_id", T.IntegerType()),
-     T.StructField('tpep_pickup_datetime', T.TimestampType()),
-     T.StructField('tpep_dropoff_datetime', T.TimestampType()),
      T.StructField("PULocationID", T.IntegerType()),
      T.StructField("DOLocationID", T.IntegerType()),
+     T.StructField('tpep_pickup_datetime', T.TimestampType()),
+     T.StructField('tpep_dropoff_datetime', T.TimestampType()),
      T.StructField("passenger_count", T.IntegerType()),
      T.StructField("trip_distance", T.FloatType()),
      T.StructField("payment_type", T.IntegerType()),

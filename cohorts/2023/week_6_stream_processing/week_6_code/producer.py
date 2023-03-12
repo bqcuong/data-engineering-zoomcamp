@@ -25,14 +25,12 @@ class RideCSVProducer:
         
         df = pd.read_csv(resource_path)
         df = df.rename(columns={"lpep_pickup_datetime": "tpep_pickup_datetime", "lpep_dropoff_datetime": "tpep_dropoff_datetime"})
-        df = df.head(10)
+        df = df.head(20)
         df = df[['VendorID', 'PULocationID', 'DOLocationID', 'tpep_pickup_datetime', 'tpep_dropoff_datetime', 'passenger_count', 'trip_distance', 'payment_type', 'total_amount']]
 
-        df["json"] = df.apply(lambda x: x.to_json(), axis=1)
-
+        records = df.to_csv(header=False, index=False).split('\n')
         ride_keys = map(str, df['VendorID'].tolist())
-        records = map(str, df['json'].tolist())
-
+        
         return zip(ride_keys, records)
 
     def publish(self, topic: str, records: [str, str]):
